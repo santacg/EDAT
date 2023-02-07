@@ -69,18 +69,16 @@ Vertex *vertex_initFromString(char *descr){
 
 /* Constructor. Initialize a vertex */
 Vertex * vertex_init () {
-  int id = 0;
   char tag[TAG_LENGTH] = "\0";
-  Label state = WHITE;
   Vertex * v = NULL;
 
   v = (Vertex *) malloc(sizeof(Vertex));
 
   if (!v) return NULL;
 
-  v->id = id;
+  v->id = 0;
   strcpy(v->tag, tag);
-  v->state = state;
+  v->state = WHITE;
 
   return v;
 }
