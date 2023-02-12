@@ -214,19 +214,33 @@ int graph_getNumberOfConnectionsFromTag(const Graph *g, char *tag){
 
 /* Returns an array with the ids of all the vertices which a given vertex connects to */
 long *graph_getConnectionsFromTag(const Graph *g, char *tag){
-    int i = 0, n = 0;
+    int i = 0, n = 0, j = 0;
+    long id_dest = 0, id = 0;
     long *array = NULL;
     
-    if (!g || !tag) return -1;
+    if (!g || !tag) return NULL;
 
     n = graph_getNumberOfConnectionsFromTag(g, tag);
     array = (long *) malloc(sizeof(long) * n);
+    if (!array) return NULL; 
 
     for (i = 0; i < g->num_vertices; i++) {
-
+        if (strcmp(vertex_getTag(g->vertices[i]), tag) == 0) {
+            id = vertex_getId(g->vertices[i]);
+        }
     }
 
-    return NULL;
+    for (i = 0; i < g->num_vertices; i++) {
+        id_dest = vertex_getId(g->vertices[i]);
+        if (id_dest != id) {
+            if (g->connections[id][id_dest] == TRUE) {
+                array[j] = id_dest;
+                j++;
+            }
+        }
+    }
+
+    return array;
          
 }
 

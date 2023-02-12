@@ -6,8 +6,10 @@
 
 int main () {
     Graph *g = NULL;
+    int i = 0;
     char aux[MAX_CHAR] = "\0";
     int result = 0;
+    long *array = NULL;
     g = graph_init();
     if (!g) return 1;
 
@@ -34,9 +36,10 @@ int main () {
     result = graph_getNumberOfConnectionsFromTag(g, "TOLEDO");
     fprintf(stdout, "Number of connections from Toledo: %d\n", result);
     
-    graph_getConnectionsFromId(g, 222);
-
-
+    array = graph_getConnectionsFromTag(g, "TOLEDO");
+    for (i = 0; i < 1; i++) {
+        fprintf(stdout, "Connections from Toledo: %ld\n", array[i]);
+    }
 
     return 0;
 }
