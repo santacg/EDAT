@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include "graph.h"
 
 #define MAX_VTX 4096
@@ -34,7 +35,7 @@ Graph * graph_init() {
 
 /* Frees a graph */
 void graph_free(Graph *g){
-    int i = 0, j = 0;
+    int i = 0;
     if (!g) return;
 
     for (i = 0; i < MAX_VTX; i++) {
@@ -64,7 +65,7 @@ Status graph_newVertex(Graph *g, char *desc){
     }
 
     if (i < MAX_VTX) {
-        g->vertices[i] == v;
+        g->vertices[i] = v;
         g->num_vertices++;
         return OK;
     }
@@ -78,7 +79,7 @@ Status graph_newEdge(Graph *g, long orig, long dest){
     Bool flag1 = FALSE, flag2 = FALSE;
     if (!g || orig < 0 || dest < 0) return ERROR;
 
-    while (i < g->num_vertices && (vertex_getId(g->vertices[i]) != orig)) {
+    while (i < g->num_vertices) {
         if (vertex_getId(g->vertices[i]) == orig) {
             flag1 = TRUE;
             break;
@@ -86,7 +87,7 @@ Status graph_newEdge(Graph *g, long orig, long dest){
         i++;
     }
 
-    while (j < g->num_vertices && (vertex_getId(g->vertices[j]) != dest)) {
+    while (j < g->num_vertices) {
         if (vertex_getId(g->vertices[j]) == dest) {
             flag2 = TRUE;
             break;
@@ -96,7 +97,7 @@ Status graph_newEdge(Graph *g, long orig, long dest){
 
     if (flag1 == FALSE || flag2 == FALSE) return ERROR;
 
-    g->connections[i][j] = TRUE;
+    g->connections[orig][dest] = TRUE;
     g->num_edges++;
 
     return OK;
@@ -105,7 +106,7 @@ Status graph_newEdge(Graph *g, long orig, long dest){
 
 /* Checks if a graph contains a vertex */
 Bool graph_contains(const Graph *g, long id) {
-    int i = 0, cmp = 0;
+    int i = 0;
 
     if(!g || id < 0) return FALSE;
     
@@ -149,12 +150,16 @@ Bool graph_connectionExists(const Graph *g, long orig, long dest){
 /* Gets the number of connections starting at a given vertex */
 int graph_getNumberOfConnectionsFromId(const Graph *g, long id){
     int i = 0, n = 0;
+    long id_dest = 0;
     
     if (!g || id < 0) return -1;
 
     for (i = 0; i < g->num_vertices; i++) {
-        if (g->connections[id][i] == TRUE) {
-            n++;
+        id_dest = vertex_getId(g->vertices[i]);
+        if (id_dest != id) {
+            if (g->connections[id][id_dest] == TRUE) {
+                n++;
+            }
         }
     }
 
@@ -163,18 +168,25 @@ int graph_getNumberOfConnectionsFromId(const Graph *g, long id){
 
 /* Returns an array with the ids of all the vertices which a given vertex connects to */
 long *graph_getConnectionsFromId(const Graph *g, long id){
-    int i = 0, n_vertices = 0;
+    int i = 0, j = 0, n = 0;
+    int id_dest = 0;
     long *array = NULL;
     
     if (!g || id < 0) return NULL;
 
-    n_vertices = graph_getNumberOfConnectionsFromId(g, id);
+    n = graph_getNumberOfConnectionsFromId(g, id);
 
-    array = (long *) malloc (sizeof(long) * n_vertices);
-    if (!array) return -1;
+    array = (long *) malloc (sizeof(long) * n);
+    if (!array) return NULL;
 
-    for (i = 0; i < n_vertices; i++) {
-        array[i] = vertex_getId(g->vertices[i]);
+    for (i = 0; i < g->num_vertices; i++) {
+        id_dest = vertex_getId(g->vertices[i]);
+        if (id_dest != id) {
+            if (g->connections[id][id_dest] == TRUE) {
+                array[j] = id_dest;
+                j++;
+            }
+        }
     }
 
     return array;
@@ -183,12 +195,39 @@ long *graph_getConnectionsFromId(const Graph *g, long id){
 
 /* Gets the number of connections starting at a given vertex */
 int graph_getNumberOfConnectionsFromTag(const Graph *g, char *tag){
+    int i = 0;
+    long id = 0;
+    int n = 0;
     
+    if (!g || !tag) return -1;
+
+    for (i = 0; i < g->num_vertices; i++) {
+        if (strcmp(vertex_getTag(g->vertices[i]), tag) == 0) {
+            id = vertex_getId(g->vertices[i]);
+        }
+    }
+
+    n = graph_getNumberOfConnectionsFromId(g, id);
+    
+    return n;
 }
 
 /* Returns an array with the ids of all the vertices which a given vertex connects to */
 long *graph_getConnectionsFromTag(const Graph *g, char *tag){
+    int i = 0, n = 0;
+    long *array = NULL;
     
+    if (!g || !tag) return -1;
+
+    n = graph_getNumberOfConnectionsFromTag(g, tag);
+    array = (long *) malloc(sizeof(long) * n);
+
+    for (i = 0; i < g->num_vertices; i++) {
+
+    }
+
+    return NULL;
+         
 }
 
 /* Prints a graph */
