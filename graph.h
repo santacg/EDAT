@@ -208,4 +208,24 @@ int graph_print (FILE *pf, const Graph *g);
  */
 Status graph_readFromFile (FILE *fin, Graph *g);
 
+/**
+ * @brief Gets the vertex within the graph that has the given id.
+ *
+ * @param g Pointer to the graph.
+ * @param id long corresponding the vertex id.
+ *
+ * @return Returns the vertex that corresponds to the given id, NULL if something goes wrong
+ **/
+Vertex *graph_getVertexFromId (const Graph *g, long id, int *pos);
+
+/**
+ * @brief Gets the vertex within the graph that has the given tag.
+ *
+ * @param g Pointer to the graph.
+ * @param tag Tag of the origin vertex.
+ *
+ * @return Returns the vertex that corresponds to the given tag, NULL if something goes wrong
+ **/
+Vertex *graph_getVertexFromTag (const Graph *g, char *tag, int *pos);
+
 #endif /* GRAPH_H */

@@ -222,4 +222,6 @@ void * vertex_copy (const void * src);
  */
 int vertex_print (FILE * pf, const void * v);
 
+
+
 #endif /* VERTEX_H_ */
