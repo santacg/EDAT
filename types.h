@@ -13,6 +13,7 @@
 #ifndef TYPES_H_
 #define TYPES_H_
 
+#include <stdio.h>
 /**
  * @brief ADT Boolean
  */
