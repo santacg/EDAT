@@ -77,7 +77,7 @@ Vertex * vertex_init () {
   if (!v) return NULL;
 
   v->id = 0;
-  strcpy(v->tag, tag);
+  if (!strcpy(v->tag, tag)) return NULL;
   v->state = WHITE;
 
   return v;
@@ -92,7 +92,7 @@ void vertex_free (void * v) {
 
 /* Gets the vertex id */
 long vertex_getId (const Vertex * v){
-  if (!v) return -1;
+  if (!v) return EXIT_FAILURE;
 
   return v->id;
 }
@@ -123,8 +123,12 @@ Status vertex_setId (Vertex * v, const long id){
 
 /* Modifies the tag of a given vertex */
 Status vertex_setTag (Vertex * v, const char * tag){
+  int len = 0;
   if (!v || !tag)
     return ERROR;
+  
+  len = strlen(tag);
+  if (len > TAG_LENGTH) return ERROR;
     
   if(strcpy(v->tag, tag) != NULL) {
     return OK;
@@ -165,10 +169,10 @@ int vertex_cmp (const void * v1, const void * v2){
     return cmp;
   }
   else if (id1 < id2) {
-    return -1;
+    return O_ERROR;
   }
   else if (id1 > id2) {
-    return 1;
+    return EXIT_SUCCESS;
   }
 
   return 0;
@@ -185,18 +189,25 @@ void * vertex_copy (const void * src){
   dst = vertex_init();
   if (!dst)
   {
+    vertex_free(dst);
     return NULL;
   }
   
   status = vertex_setId(dst, vertex_getId(src));
-  if(status == ERROR)
+  if(status == ERROR) {
+    vertex_free(dst);
     return NULL;
+  }
   status = vertex_setState(dst, vertex_getState(src));
-  if(status == ERROR)
+  if(status == ERROR) {
+    vertex_free(dst);
     return NULL;
+  }
   status = vertex_setTag(dst, vertex_getTag(src));
-  if(status == ERROR)
+  if(status == ERROR) {
+    vertex_free(dst);
     return NULL;
+  }
 
   return dst;
 }
@@ -209,16 +220,16 @@ int vertex_print (FILE * pf, const void * v){
   const char *tag_aux = NULL;
   Label state_aux = ERROR_VERTEX;
 
-  if(!pf || !v) return -1;
+  if(!pf || !v) return O_ERROR;
 
   id_aux = vertex_getId(vertex);
-  if (id_aux == -1) {
-    return -1;
+  if (id_aux == O_ERROR) {
+    return O_ERROR;
   }
  
   tag_aux = vertex_getTag(vertex);
   if (tag_aux == NULL) {
-    return -1;
+    return O_ERROR;
   }
   state_aux = vertex_getState(vertex);
   

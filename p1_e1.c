@@ -9,58 +9,58 @@ int main() {
     
     /* Vertex initialization */
     v1 = vertex_init();
-    if (!v1) return 1;
+    if (!v1) return EXIT_FAILURE;
     v2 = vertex_init();
     if (!v2) {
         vertex_free(v1);
-        return 1;
+        return EXIT_FAILURE;
     }
 
     /* First vertex setting*/
     if(vertex_setId(v1, 10) == ERROR) {
         vertex_free(v1);
         vertex_free(v2);
-        return 1;
+        return EXIT_FAILURE;
     }
     if(vertex_setTag(v1, "one") == ERROR) {        
         vertex_free(v1);
         vertex_free(v2);
-        return 1;
+        return EXIT_FAILURE;
     }
     if(vertex_setState(v1, WHITE) == ERROR) {
         vertex_free(v1);
         vertex_free(v2);
-        return 1;
+        return EXIT_FAILURE;
     }
     
     /* Second vertex setting*/
     if (vertex_setId(v2, 20) == ERROR) {
         vertex_free(v1);
         vertex_free(v2);
-        return 1;
+        return EXIT_FAILURE;
     }
     if (vertex_setTag(v2, "two") == ERROR) {
         vertex_free(v1);
         vertex_free(v2);
-        return 1;
+        return EXIT_FAILURE;
     }
     if (vertex_setState(v2, BLACK) == ERROR) {
         vertex_free(v1);
         vertex_free(v2);
-        return 1;
+        return EXIT_FAILURE;
     }
 
     /* First vertex print */
     if (vertex_print(stdout, v1) == -1) {
         vertex_free(v1);
         vertex_free(v2);
-        return 1;
+        return EXIT_FAILURE;
     }
     /* Second vertex print */
     if (vertex_print(stdout, v2) == -1) {
         vertex_free(v1);
         vertex_free(v2);
-        return 1;
+        return EXIT_FAILURE;
     }
     /* Comparing vertices v1 and v2 */
     if (vertex_cmp(v1, v2) == 0) {
@@ -79,7 +79,7 @@ int main() {
     if (!v3) {
         vertex_free(v1);
         vertex_free(v2);
-        return 1;
+        return EXIT_FAILURE;
     }
 
     /* Prints v1 and v3 ids to asure that v1 is copied in v3*/
@@ -90,14 +90,14 @@ int main() {
         vertex_free(v1);
         vertex_free(v2);
         vertex_free(v3);
-        return 1;  
+        return EXIT_FAILURE;  
     }
     /* Print the third vertex */
     if (vertex_print(stdout, v3) == -1) {
         vertex_free(v1);
         vertex_free(v2);
         vertex_free(v3);
-        return 1;
+        return EXIT_FAILURE;
     }
 
     /* Comparing vertices v1 and v3 */
@@ -112,7 +112,7 @@ int main() {
     vertex_free(v2);
     vertex_free(v3);
 
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 

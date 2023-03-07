@@ -9,9 +9,10 @@ int main () {
     int i = 0;
     char aux[MAX_CHAR] = "\0";
     int result = 0;
+    int len = 0;
     long *array = NULL;
     g = graph_init();
-    if (!g) return 1;
+    if (!g) return EXIT_FAILURE;
 
     strcpy(aux, "id:111 tag:MADRID state:WHITE");
     if (graph_newVertex(g, aux) == OK) {
@@ -34,7 +35,7 @@ int main () {
     if (graph_newEdge(g, 222, 111) == ERROR) {
         fprintf(stdout, "Error inserting edge");
         graph_free(g);   
-        return 1;
+        return EXIT_FAILURE;
     }
     fprintf(stdout, "Inserting edge: 222 --> 111\n");
 
@@ -62,20 +63,21 @@ int main () {
     
     array = graph_getConnectionsFromTag(g, "TOLEDO");
     fprintf(stdout, "Connections from Toledo: ");
-    for (i = 0; i < graph_getNumberOfConnectionsFromTag(g, "TOLEDO"); i++) {
+    len = graph_getNumberOfConnectionsFromTag(g, "TOLEDO");
+    for (i = 0; i < len; i++) {
         fprintf(stdout, "%ld ", array[i]);
     }
 
     fprintf(stdout, "\n");
 
-    if (graph_print(stdout, g) == -1) {
+    if (graph_print(stdout, g) == O_ERROR) {
         fprintf(stdout, "Error printing graph");
         graph_free(g);
-        return 1;
+        return EXIT_FAILURE;
     }
 
     free(array);
     graph_free(g);
 
-    return 0;
+    return EXIT_SUCCESS;
 }

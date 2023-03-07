@@ -12,6 +12,7 @@
 
 #ifndef TYPES_H_
 #define TYPES_H_
+#define O_ERROR -1
 
 /**
  * @brief ADT Boolean
