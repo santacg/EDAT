@@ -12,6 +12,10 @@
 
 #ifndef TYPES_H_
 #define TYPES_H_
+#define RET_ERROR -1
+#define CMP_COMP -2
+#define MAX_CHAR 256
+#define LINE 1000
 
 #include <stdio.h>
 /**
@@ -21,6 +25,7 @@ typedef enum {
     FALSE=0, /*!< False value */
     TRUE=1  /*!< True value  */
 } Bool;
+
 
 /** 
  * @brief ADT Status
