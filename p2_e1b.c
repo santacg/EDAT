@@ -98,10 +98,10 @@ Status mergeStacks(Stack *sin1, Stack *sin2, Stack *sout, f_cmp f)
 int stack_cmp(Stack *s1, Stack *s2, f_cmp f)
 {
 
-    if(!s1 || !s2) return RET_ERROR;
-        
+    if (!s1 || !s2)
+        return RET_ERROR;
+
     return f(stack_top(s1), stack_top(s2));
-        
 }
 
 int main(int argc, char **argv)
@@ -115,24 +115,31 @@ int main(int argc, char **argv)
     char aux[MAX_CHAR] = "\0";
     Vertex *v = NULL;
 
-    if (argc != 3) return EXIT_FAILURE;
+    if (argc != 3)
+        return EXIT_FAILURE;
 
     f = fopen(argv[1], "r");
-    if (!f) return EXIT_FAILURE;
+    if (!f)
+        return EXIT_FAILURE;
 
     s1 = stack_init();
 
-    if (!s1) {
+    if (!s1)
+    {
         stack_free(s1);
         return EXIT_FAILURE;
     }
 
     fscanf(f, "%d", &n);
-    while (fgets(aux, LINE, f) && i < n+1) {
-        if (strncmp("id", aux, 2) == 0) {
+    while (fgets(aux, LINE, f) && i < n + 1)
+    {
+        if (strncmp("id", aux, 2) == 0)
+        {
             v = vertex_initFromString(aux);
-            if (stack_push(s1, v) == ERROR) {
-                while (stack_isEmpty(s1) == FALSE) {
+            if (stack_push(s1, v) == ERROR)
+            {
+                while (stack_isEmpty(s1) == FALSE)
+                {
                     vertex_free(stack_pop(s1));
                 }
                 stack_free(s1);
@@ -144,8 +151,10 @@ int main(int argc, char **argv)
     fclose(f);
 
     f = fopen(argv[2], "r");
-    if (!f) {
-        while (stack_isEmpty(s1) == FALSE) {
+    if (!f)
+    {
+        while (stack_isEmpty(s1) == FALSE)
+        {
             vertex_free(stack_pop(s1));
         }
         stack_free(s1);
@@ -153,26 +162,33 @@ int main(int argc, char **argv)
     }
 
     s2 = stack_init();
-    if (!s2) {
-        while (stack_isEmpty(s1) == FALSE) {
+    if (!s2)
+    {
+        while (stack_isEmpty(s1) == FALSE)
+        {
             vertex_free(stack_pop(s1));
         }
         stack_free(s1);
         stack_free(s2);
         return EXIT_FAILURE;
     }
-    
+
     fscanf(f, "%d", &n);
     i = 0;
-    while (fgets(aux, LINE, f) && i < n+1) {
-        if (strncmp("id", aux, 2) == 0) {
+    while (fgets(aux, LINE, f) && i < n + 1)
+    {
+        if (strncmp("id", aux, 2) == 0)
+        {
             v = vertex_initFromString(aux);
-            if (stack_push(s2, v) == ERROR) {
-                while (stack_isEmpty(s1) == FALSE) {
+            if (stack_push(s2, v) == ERROR)
+            {
+                while (stack_isEmpty(s1) == FALSE)
+                {
                     vertex_free(stack_pop(s1));
                 }
                 stack_free(s1);
-                while (stack_isEmpty(s2) == FALSE) {
+                while (stack_isEmpty(s2) == FALSE)
+                {
                     vertex_free(stack_pop(s2));
                 }
                 stack_free(s2);
@@ -183,12 +199,15 @@ int main(int argc, char **argv)
     }
 
     s = stack_init();
-    if (!s) {
-        while (stack_isEmpty(s1) == FALSE) {
+    if (!s)
+    {
+        while (stack_isEmpty(s1) == FALSE)
+        {
             vertex_free(stack_pop(s1));
         }
         stack_free(s1);
-        while (stack_isEmpty(s2) == FALSE) {
+        while (stack_isEmpty(s2) == FALSE)
+        {
             vertex_free(stack_pop(s2));
         }
         stack_free(s2);
@@ -199,16 +218,20 @@ int main(int argc, char **argv)
     stack_print(stdout, s1, vertex_print);
     fprintf(stdout, "Ranking 1:\n");
     stack_print(stdout, s2, vertex_print);
-    if (mergeStacks(s1, s2, s, vertex_cmp) == ERROR) {
-        while (stack_isEmpty(s1) == FALSE) {
+    if (mergeStacks(s1, s2, s, vertex_cmp) == ERROR)
+    {
+        while (stack_isEmpty(s1) == FALSE)
+        {
             vertex_free(stack_pop(s1));
         }
         stack_free(s1);
-        while (stack_isEmpty(s2) == FALSE) {
+        while (stack_isEmpty(s2) == FALSE)
+        {
             vertex_free(stack_pop(s2));
         }
         stack_free(s2);
-        while (stack_isEmpty(s) == FALSE) {
+        while (stack_isEmpty(s) == FALSE)
+        {
             vertex_free(stack_pop(s));
         }
         stack_free(s);

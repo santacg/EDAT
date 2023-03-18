@@ -228,6 +228,37 @@ Vertex *graph_getVertexFromId(const Graph *g, long id);
  **/
 Vertex *graph_getVertexFromTag(const Graph *g, char *tag);
 
+/**
+ * @brief Gets the vertex within the graph that has the given index.
+ *
+ * @param g Pointer to the graph.
+ * @param ix int corresponding the vertex index.
+ *
+ * @return Returns the vertex that corresponds to the given index, NULL if something goes wrong
+ **/
+Vertex *graph_getVertexFromIndex(const Graph *g, int ix);
+
+/**
+ * @brief Returns TRUE if the graph is full, FALSE if not.
+ *
+ * @param g Pointer to the graph.
+ *
+ * @return Returns TRUE if the graph is full or in case of error, FALSE if not.
+ **/
 Bool graph_isFull(const Graph *g);
+
+/**
+* @brief: Makes a search from the origin vertex to the destination vertex
+of a graph using the depth-first search algorithm
+* using an ADT Stack
+*
+* The function prints each visited vertex while traversing the graph
+*
+* @param g, Pointer to graph
+* @param from_id, id of the origin Vertex
+* @param to_id, id of the destination Vertex
+* @return The function returns OK or ERROR
+**/
+Status graph_depthSearch (Graph *g, long from_id, long to_id);
 
 #endif /* GRAPH_H */

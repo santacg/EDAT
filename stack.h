@@ -69,7 +69,6 @@ Status stack_push (Stack *s, const void *ele);
  * */
 void * stack_pop (Stack *s);
 
-
 /**
  * @brief  This function is used to reference the top (or the newest) element of the stack.
  *
