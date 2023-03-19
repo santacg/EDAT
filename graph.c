@@ -486,7 +486,7 @@ Status graph_readFromFile(FILE *fin, Graph *g)
 {
     int i = 0;
     int n = 0;
-    char aux[MAX_CHAR];
+    char aux[MAX_CHAR*LINE];
     long id_orig = 0, id_dest = 0;
 
     if (!fin || !g)

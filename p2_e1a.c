@@ -1,5 +1,6 @@
 #include "stack.h"
 #include "file_utils.h"
+#include "types.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -12,11 +13,24 @@
  * @return The function returns OK or ERROR
  **/
 
-// mergeStacks(s1, s2, s3, int_cmp);
+void clear_mstack(Stack *s);
 
 Status mergeStacks(Stack *sin1, Stack *sin2, Stack *sout);
 
 int stack_cmp(Stack *s1, Stack *s2);
+
+void clear_mstack(Stack *s)
+{
+
+    if (!s)
+        return;
+
+    while (stack_isEmpty(s) == FALSE)
+    {
+        float_free(stack_pop(s));
+    }
+    stack_free(s);
+}
 
 Status mergeStacks(Stack *sin1, Stack *sin2, Stack *sout)
 {
@@ -66,7 +80,9 @@ Status mergeStacks(Stack *sin1, Stack *sin2, Stack *sout)
         {
             e = stack_pop(sin1);
             if (stack_push(s_aux, e) == ERROR)
-                return ERROR;
+            {
+                break;
+            }
         }
     }
     else if (stack_isEmpty(sin2) == FALSE)
@@ -128,14 +144,7 @@ int main(int argc, char **argv)
     int i = 0, n1 = 0, n2 = 0;
     float ele = 0;
     float *fl = NULL;
-    void *e = NULL;
-
-    s1 = stack_init();
-    s2 = stack_init();
-    s = stack_init();
-
-    if (!s1 || !s2 || !s)
-        return EXIT_FAILURE;
+    Status st = OK;
 
     if (argc != 3)
         return EXIT_FAILURE;
@@ -144,56 +153,105 @@ int main(int argc, char **argv)
     if (!f)
         return EXIT_FAILURE;
 
+    s1 = stack_init();
+    if (!s1)
+    {
+        fclose(f);
+        return EXIT_FAILURE;
+    }
+
     fscanf(f, "%d", &n1);
-    for (i = 0; i < n1; i++)
+    for (i = 0; i < n1 && st == OK; i++)
     {
         fscanf(f, "%f", &ele);
         fl = float_init(ele);
-        stack_push(s1, fl);
+        if (!fl)
+        {
+            st = ERROR;
+        }
+        if (stack_push(s1, fl) == ERROR)
+        {
+            st = ERROR;
+        }
     }
 
+    if (st == ERROR)
+    {
+        clear_mstack(s1);
+        fclose(f);
+        return EXIT_FAILURE;
+    }
+
+    fprintf(stdout, "Ranking 0:\n");
+    fprintf(stdout, "Size:%d\n", n1);
+    stack_print(stdout, s1, float_print);
     fclose(f);
 
     f = fopen(argv[2], "r");
     if (!f)
+    {
+        clear_mstack(s1);
         return EXIT_FAILURE;
+    }
+
+    s2 = stack_init();
+    if (!s2)
+    {
+        clear_mstack(s1);
+        fclose(f);
+        return EXIT_FAILURE;
+    }
 
     fscanf(f, "%d", &n2);
-    for (i = 0; i < n2; i++)
+    for (i = 0, st = OK; i < n2 && st == OK; i++)
     {
         fscanf(f, "%f", &ele);
         fl = float_init(ele);
-        stack_push(s2, fl);
+        if (!fl)
+        {
+            st = ERROR;
+        }
+        if (stack_push(s2, fl) == ERROR)
+        {
+            st = ERROR;
+        }
     }
 
-    fprintf(stdout, "Ranking 0:\n");
-    stack_print(stdout, s1, float_print);
-    fprintf(stdout, "Ranking 1:\n");
-    stack_print(stdout, s2, float_print);
-    mergeStacks(s1, s2, s);
-    fprintf(stdout, "Joint Ranking:\n");
-    stack_print(stdout, s, float_print);
+    if (st == ERROR)
+    {
+        clear_mstack(s1);
+        clear_mstack(s2);
+        fclose(f);
+        return EXIT_FAILURE;
+    }
 
+    fprintf(stdout, "Ranking 1:\n");
+    fprintf(stdout, "Size:%d\n", n2);
+    stack_print(stdout, s2, float_print);
     fclose(f);
 
-    while (stack_isEmpty(s) == FALSE)
+    s = stack_init();
+    if (!s)
     {
-        e = stack_pop(s);
-        float_free(e);
+        clear_mstack(s1);
+        clear_mstack(s2);
+        return EXIT_FAILURE;
     }
-    stack_free(s);
-    while (stack_isEmpty(s1) == FALSE)
+    if (mergeStacks(s1, s2, s) == ERROR)
     {
-        e = stack_pop(s1);
-        float_free(e);
+        clear_mstack(s1);
+        clear_mstack(s2);
+        clear_mstack(s);
+        return EXIT_FAILURE;
     }
-    stack_free(s1);
-    while (stack_isEmpty(s2) == FALSE)
-    {
-        e = stack_pop(s2);
-        float_free(e);
-    }
-    stack_free(s2);
+
+    fprintf(stdout, "Joint Ranking:\n");
+    fprintf(stdout, "Size:%d\n", n1 + n2);
+    stack_print(stdout, s, float_print);
+
+    clear_mstack(s);
+    clear_mstack(s1);
+    clear_mstack(s2);
 
     return EXIT_SUCCESS;
 }

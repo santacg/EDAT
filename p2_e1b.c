@@ -14,13 +14,26 @@
  * @return The function returns OK or ERROR
  **/
 
-// mergeStacks(s1, s2, s3, int_cmp);
+void clear_mstack(Stack *s);
 
 typedef int (*f_cmp)(const void *elem1, const void *elem2);
 
 Status mergeStacks(Stack *sin1, Stack *sin2, Stack *sout, f_cmp f);
 
 int stack_cmp(Stack *s1, Stack *s2, f_cmp f);
+
+void clear_mstack(Stack *s)
+{
+
+    if (!s)
+        return;
+
+    while (stack_isEmpty(s) == FALSE)
+    {
+        vertex_free(stack_pop(s));
+    }
+    stack_free(s);
+}
 
 Status mergeStacks(Stack *sin1, Stack *sin2, Stack *sout, f_cmp f)
 {
@@ -111,8 +124,8 @@ int main(int argc, char **argv)
     Stack *s1 = NULL;
     Stack *s2 = NULL;
     Stack *s = NULL;
-    int i = 0, n = 0;
-    char aux[MAX_CHAR] = "\0";
+    int i = 0, n1 = 0, n2 = 0;
+    char aux[MAX_CHAR*LINE] = "\0";
     Vertex *v = NULL;
 
     if (argc != 3)
@@ -123,26 +136,22 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
 
     s1 = stack_init();
-
     if (!s1)
     {
-        stack_free(s1);
+        fclose(f);
         return EXIT_FAILURE;
     }
 
-    fscanf(f, "%d", &n);
-    while (fgets(aux, LINE, f) && i < n + 1)
+    fscanf(f, "%d", &n1);
+    while (fgets(aux, LINE, f) && i < n1 + 1)
     {
         if (strncmp("id", aux, 2) == 0)
         {
             v = vertex_initFromString(aux);
             if (stack_push(s1, v) == ERROR)
             {
-                while (stack_isEmpty(s1) == FALSE)
-                {
-                    vertex_free(stack_pop(s1));
-                }
-                stack_free(s1);
+                clear_mstack(s1);
+                fclose(f);
                 return EXIT_FAILURE;
             }
         }
@@ -150,113 +159,71 @@ int main(int argc, char **argv)
     }
     fclose(f);
 
+    fprintf(stdout, "Ranking 0:\n");
+    fprintf(stdout, "Size:%d\n", n1);
+    stack_print(stdout, s1, vertex_print);
+
     f = fopen(argv[2], "r");
     if (!f)
     {
-        while (stack_isEmpty(s1) == FALSE)
-        {
-            vertex_free(stack_pop(s1));
-        }
-        stack_free(s1);
+        clear_mstack(s1);
         return EXIT_FAILURE;
     }
 
     s2 = stack_init();
     if (!s2)
     {
-        while (stack_isEmpty(s1) == FALSE)
-        {
-            vertex_free(stack_pop(s1));
-        }
-        stack_free(s1);
-        stack_free(s2);
+        clear_mstack(s1);
+        fclose(f);
         return EXIT_FAILURE;
     }
 
-    fscanf(f, "%d", &n);
+    fscanf(f, "%d", &n2);
     i = 0;
-    while (fgets(aux, LINE, f) && i < n + 1)
+    while (fgets(aux, LINE, f) && i < n2 + 1)
     {
         if (strncmp("id", aux, 2) == 0)
         {
             v = vertex_initFromString(aux);
             if (stack_push(s2, v) == ERROR)
             {
-                while (stack_isEmpty(s1) == FALSE)
-                {
-                    vertex_free(stack_pop(s1));
-                }
-                stack_free(s1);
-                while (stack_isEmpty(s2) == FALSE)
-                {
-                    vertex_free(stack_pop(s2));
-                }
-                stack_free(s2);
+                clear_mstack(s1);
+                clear_mstack(s2);
+                fclose(f);
                 return EXIT_FAILURE;
             }
         }
         i++;
     }
+    fclose(f);
+
+    fprintf(stdout, "Ranking 1:\n");
+    fprintf(stdout, "Size:%d\n", n2);
+    stack_print(stdout, s2, vertex_print);
 
     s = stack_init();
     if (!s)
     {
-        while (stack_isEmpty(s1) == FALSE)
-        {
-            vertex_free(stack_pop(s1));
-        }
-        stack_free(s1);
-        while (stack_isEmpty(s2) == FALSE)
-        {
-            vertex_free(stack_pop(s2));
-        }
-        stack_free(s2);
-        stack_free(s);
+        clear_mstack(s1);
+        clear_mstack(s2);
         return EXIT_FAILURE;
     }
-    fprintf(stdout, "Ranking 0:\n");
-    stack_print(stdout, s1, vertex_print);
-    fprintf(stdout, "Ranking 1:\n");
-    stack_print(stdout, s2, vertex_print);
+
     if (mergeStacks(s1, s2, s, vertex_cmp) == ERROR)
     {
-        while (stack_isEmpty(s1) == FALSE)
-        {
-            vertex_free(stack_pop(s1));
-        }
-        stack_free(s1);
-        while (stack_isEmpty(s2) == FALSE)
-        {
-            vertex_free(stack_pop(s2));
-        }
-        stack_free(s2);
-        while (stack_isEmpty(s) == FALSE)
-        {
-            vertex_free(stack_pop(s));
-        }
-        stack_free(s);
+        clear_mstack(s1);
+        clear_mstack(s2);
+        clear_mstack(s);
         return EXIT_FAILURE;
     }
+
     fprintf(stdout, "Joint Ranking:\n");
+    fprintf(stdout, "Size:%d\n", n1 + n2);
     stack_print(stdout, s, vertex_print);
 
-    fclose(f);
-
-    while (stack_isEmpty(s) == FALSE)
-    {
-        vertex_free(stack_pop(s));
-    }
-    stack_free(s);
-    while (stack_isEmpty(s1) == FALSE)
-    {
-        vertex_free(stack_pop(s1));
-    }
-    stack_free(s1);
-    while (stack_isEmpty(s2) == FALSE)
-    {
-        vertex_free(stack_pop(s2));
-    }
-    stack_free(s2);
+    clear_mstack(s1);
+    clear_mstack(s2);
+    clear_mstack(s);
 
     return EXIT_SUCCESS;
 }

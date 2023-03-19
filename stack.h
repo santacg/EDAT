@@ -1,18 +1,3 @@
-// [ALL]
-/**
- * @file  stack_fDoble.h
- * @author Prog2
- * @date 8 Mar 2021
- * @version 1.0
- * @brief Stack library
- *
- * @details Stack interface
- *
- * @see http://www.stack.nl/~dimitri/doxygen/docblocks.html
- * @see http://www.stack.nl/~dimitri/doxygen/commands.html
- */
-
-
 #ifndef STACK_H
 #define STACK_H
 
