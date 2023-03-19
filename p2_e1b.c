@@ -160,7 +160,6 @@ int main(int argc, char **argv)
     fclose(f);
 
     fprintf(stdout, "Ranking 0:\n");
-    fprintf(stdout, "Size:%d\n", n1);
     stack_print(stdout, s1, vertex_print);
 
     f = fopen(argv[2], "r");
@@ -198,7 +197,6 @@ int main(int argc, char **argv)
     fclose(f);
 
     fprintf(stdout, "Ranking 1:\n");
-    fprintf(stdout, "Size:%d\n", n2);
     stack_print(stdout, s2, vertex_print);
 
     s = stack_init();
@@ -218,7 +216,6 @@ int main(int argc, char **argv)
     }
 
     fprintf(stdout, "Joint Ranking:\n");
-    fprintf(stdout, "Size:%d\n", n1 + n2);
     stack_print(stdout, s, vertex_print);
 
     clear_mstack(s1);

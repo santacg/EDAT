@@ -183,7 +183,6 @@ int main(int argc, char **argv)
     }
 
     fprintf(stdout, "Ranking 0:\n");
-    fprintf(stdout, "Size:%d\n", n1);
     stack_print(stdout, s1, float_print);
     fclose(f);
 
@@ -226,7 +225,6 @@ int main(int argc, char **argv)
     }
 
     fprintf(stdout, "Ranking 1:\n");
-    fprintf(stdout, "Size:%d\n", n2);
     stack_print(stdout, s2, float_print);
     fclose(f);
 
@@ -246,7 +244,6 @@ int main(int argc, char **argv)
     }
 
     fprintf(stdout, "Joint Ranking:\n");
-    fprintf(stdout, "Size:%d\n", n1 + n2);
     stack_print(stdout, s, float_print);
 
     clear_mstack(s);

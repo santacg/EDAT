@@ -107,12 +107,11 @@ size_t stack_size(const Stack *s)
 int stack_print(FILE *fp, const Stack *s, P_stack_ele_print f)
 {
     int n = 0, ele = 0;
-
-
     if (!fp || !s)
         return RET_ERROR;
 
     ele = s->top;
+    fprintf(fp, "SIZE:%d\n", ele+1);
     while (ele > -1)
     {
         f(fp, s->item[ele]);
