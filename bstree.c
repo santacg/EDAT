@@ -4,7 +4,8 @@
 #include <stdlib.h>
 
 /* START [_BSTNode] */
-typedef struct _BSTNode {
+typedef struct _BSTNode
+{
   void *info;
   struct _BSTNode *left;
   struct _BSTNode *right;
@@ -12,7 +13,8 @@ typedef struct _BSTNode {
 /* END [_BSTNode] */
 
 /* START [_BSTree] */
-struct _BSTree {
+struct _BSTree
+{
   BSTNode *root;
   P_ele_print print_ele;
   P_ele_cmp cmp_ele;
@@ -20,11 +22,13 @@ struct _BSTree {
 /* END [_BSTree] */
 
 /*** BSTNode TAD private functions ***/
-BSTNode *_bst_node_new() {
+BSTNode *_bst_node_new()
+{
   BSTNode *pn = NULL;
 
   pn = malloc(sizeof(BSTNode));
-  if (!pn) {
+  if (!pn)
+  {
     return NULL;
   }
 
@@ -35,16 +39,20 @@ BSTNode *_bst_node_new() {
   return pn;
 }
 
-void _bst_node_free(BSTNode *pn) {
-  if (!pn) {
+void _bst_node_free(BSTNode *pn)
+{
+  if (!pn)
+  {
     return;
   }
 
   free(pn);
 }
 
-void _bst_node_free_rec(BSTNode *pn) {
-  if (!pn) {
+void _bst_node_free_rec(BSTNode *pn)
+{
+  if (!pn)
+  {
     return;
   }
 
@@ -55,27 +63,34 @@ void _bst_node_free_rec(BSTNode *pn) {
   return;
 }
 
-int _bst_depth_rec(BSTNode *pn) {
+int _bst_depth_rec(BSTNode *pn)
+{
   int depth_l, depth_r;
 
-  if (!pn) {
+  if (!pn)
+  {
     return 0;
   }
 
   depth_l = _bst_depth_rec(pn->left);
   depth_r = _bst_depth_rec(pn->right);
 
-  if (depth_r > depth_l) {
+  if (depth_r > depth_l)
+  {
     return depth_r + 1;
-  } else {
+  }
+  else
+  {
     return depth_l + 1;
   }
 }
 
-int _bst_size_rec(BSTNode *pn) {
+int _bst_size_rec(BSTNode *pn)
+{
   int count = 0;
 
-  if (!pn) {
+  if (!pn)
+  {
     return count;
   }
 
@@ -85,10 +100,12 @@ int _bst_size_rec(BSTNode *pn) {
   return count + 1;
 }
 
-int _bst_preOrder_rec(BSTNode *pn, FILE *pf, P_ele_print print_ele) {
+int _bst_preOrder_rec(BSTNode *pn, FILE *pf, P_ele_print print_ele)
+{
   int count = 0;
 
-  if (!pn) {
+  if (!pn)
+  {
     return count;
   }
 
@@ -99,10 +116,12 @@ int _bst_preOrder_rec(BSTNode *pn, FILE *pf, P_ele_print print_ele) {
   return count;
 }
 
-int _bst_inOrder_rec(BSTNode *pn, FILE *pf, P_ele_print print_ele) {
+int _bst_inOrder_rec(BSTNode *pn, FILE *pf, P_ele_print print_ele)
+{
   int count = 0;
 
-  if (!pn) {
+  if (!pn)
+  {
     return count;
   }
 
@@ -113,10 +132,12 @@ int _bst_inOrder_rec(BSTNode *pn, FILE *pf, P_ele_print print_ele) {
   return count;
 }
 
-int _bst_postOrder_rec(BSTNode *pn, FILE *pf, P_ele_print print_ele) {
+int _bst_postOrder_rec(BSTNode *pn, FILE *pf, P_ele_print print_ele)
+{
   int count = 0;
 
-  if (!pn) {
+  if (!pn)
+  {
     return count;
   }
 
@@ -128,15 +149,18 @@ int _bst_postOrder_rec(BSTNode *pn, FILE *pf, P_ele_print print_ele) {
 }
 
 /*** BSTree TAD functions ***/
-BSTree *tree_init(P_ele_print print_ele, P_ele_cmp cmp_ele) {
+BSTree *tree_init(P_ele_print print_ele, P_ele_cmp cmp_ele)
+{
   BSTree *tree;
 
-  if (!print_ele || !cmp_ele) {
+  if (!print_ele || !cmp_ele)
+  {
     return NULL;
   }
 
   tree = malloc(sizeof(BSTree));
-  if (!tree) {
+  if (!tree)
+  {
     return NULL;
   }
 
@@ -147,8 +171,10 @@ BSTree *tree_init(P_ele_print print_ele, P_ele_cmp cmp_ele) {
   return tree;
 }
 
-void tree_destroy(BSTree *tree) {
-  if (!tree) {
+void tree_destroy(BSTree *tree)
+{
+  if (!tree)
+  {
     return;
   }
 
@@ -158,47 +184,59 @@ void tree_destroy(BSTree *tree) {
   return;
 }
 
-Bool tree_isEmpty(const BSTree *tree) {
-  if (!tree || !tree->root) {
+Bool tree_isEmpty(const BSTree *tree)
+{
+  if (!tree || !tree->root)
+  {
     return TRUE;
   }
   return FALSE;
 }
 
-int tree_depth(const BSTree *tree) {
-  if (!tree) {
+int tree_depth(const BSTree *tree)
+{
+  if (!tree)
+  {
     return -1;
   }
 
   return _bst_depth_rec(tree->root);
 }
 
-size_t tree_size(const BSTree *tree) {
-  if (!tree) {
+size_t tree_size(const BSTree *tree)
+{
+  if (!tree)
+  {
     return -1;
   }
 
   return _bst_size_rec(tree->root);
 }
 
-int tree_preOrder(FILE *f, const BSTree *tree) {
-  if (!f || !tree) {
+int tree_preOrder(FILE *f, const BSTree *tree)
+{
+  if (!f || !tree)
+  {
     return -1;
   }
 
   return _bst_preOrder_rec(tree->root, f, tree->print_ele) + fprintf(f, "\n");
 }
 
-int tree_inOrder(FILE *f, const BSTree *tree) {
-  if (!f || !tree) {
+int tree_inOrder(FILE *f, const BSTree *tree)
+{
+  if (!f || !tree)
+  {
     return -1;
   }
 
   return _bst_inOrder_rec(tree->root, f, tree->print_ele) + fprintf(f, "\n");
 }
 
-int tree_postOrder(FILE *f, const BSTree *tree) {
-  if (!f || !tree) {
+int tree_postOrder(FILE *f, const BSTree *tree)
+{
+  if (!f || !tree)
+  {
     return -1;
   }
 
@@ -206,4 +244,172 @@ int tree_postOrder(FILE *f, const BSTree *tree) {
 }
 
 /**** TODO: find_min, find_max, insert, contains, remove ****/
+/* Implementaciones privadas */
 
+BSTNode *_tree_find_min_node(BSTNode *node)
+{
+  if (!node || !node->left)
+  {
+    return node;
+  }
+  return _tree_find_min_node(node->left);
+}
+
+BSTNode *_tree_find_max_node(BSTNode *node)
+{
+  if (!node || !node->right)
+  {
+    return node;
+  }
+  return _tree_find_max_node(node->right);
+}
+
+Bool _tree_contains(BSTNode *node, const void *elem, P_ele_cmp cmp_ele)
+{
+  if (!node)
+  {
+    return FALSE;
+  }
+
+  int cmp = cmp_ele(elem, node->info);
+  if (cmp == 0)
+  {
+    return TRUE;
+  }
+  else if (cmp < 0)
+  {
+    return _tree_contains(node->left, elem, cmp_ele);
+  }
+  else
+  {
+    return _tree_contains(node->right, elem, cmp_ele);
+  }
+}
+
+static BSTNode *_bst_insert_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_ele)
+{
+  if (!pn)
+  {
+    pn = _bst_node_new();
+    if (!pn)
+    {
+      return NULL;
+    }
+    pn->info = (void *)elem;
+    return pn;
+  }
+
+  int cmp_result = cmp_ele(elem, pn->info);
+  if (cmp_result < 0)
+  {
+    pn->left = _bst_insert_rec(pn->left, elem, cmp_ele);
+  }
+  else if (cmp_result > 0)
+  {
+    pn->right = _bst_insert_rec(pn->right, elem, cmp_ele);
+  }
+
+  return pn;
+}
+
+/* Implementaciones públicas */
+
+void *tree_find_min(BSTree *tree)
+{
+  if (!tree)
+  {
+    return NULL;
+  }
+  BSTNode *min_node = _tree_find_min_node(tree->root);
+  return min_node ? min_node->info : NULL;
+}
+
+void *tree_find_max(BSTree *tree)
+{
+  if (!tree)
+  {
+    return NULL;
+  }
+  BSTNode *max_node = _tree_find_max_node(tree->root);
+  return max_node ? max_node->info : NULL;
+}
+
+Bool tree_contains(BSTree *tree, const void *elem)
+{
+  if (!tree || !elem)
+  {
+    return FALSE;
+  }
+  return _tree_contains(tree->root, elem, tree->cmp_ele);
+}
+
+Status tree_insert(BSTree *tree, const void *elem)
+{
+  if (!tree || !elem)
+  {
+    return ERROR;
+  }
+
+  tree->root = _bst_insert_rec(tree->root, elem, tree->cmp_ele);
+  return OK;
+}
+
+/* Implementación recursiva */
+
+BSTNode *_bst_remove_rec(BSTNode *node, const void *elem, P_ele_cmp cmp_ele)
+{
+  if (!node)
+  {
+    return NULL;
+  }
+
+  int cmp = cmp_ele(elem, node->info);
+  if (cmp < 0)
+  {
+    node->left = _bst_remove_rec(node->left, elem, cmp_ele);
+  }
+  else if (cmp > 0)
+  {
+    node->right = _bst_remove_rec(node->right, elem, cmp_ele);
+  }
+  else
+  {
+    if (!node->left && !node->right)
+    {
+      _bst_node_free(node);
+      return NULL;
+    }
+    else if (!node->left)
+    {
+      BSTNode *right_child = node->right;
+      _bst_node_free(node);
+      return right_child;
+    }
+    else if (!node->right)
+    {
+      BSTNode *left_child = node->left;
+      _bst_node_free(node);
+      return left_child;
+    }
+    else
+    {
+      BSTNode *min_right = _tree_find_min_node(node->right);
+      node->info = min_right->info;
+      node->right = _bst_remove_rec(node->right, min_right->info, cmp_ele);
+    }
+  }
+  return node;
+}
+
+/* Implementación pública */
+
+Status tree_remove(BSTree *tree, const void *elem)
+{
+  if (!tree || !elem)
+  {
+    return ERROR;
+  }
+  size_t initial_size = tree_size(tree);
+  tree->root = _bst_remove_rec(tree->root, elem, tree->cmp_ele);
+  return (initial_size > tree_size(tree)) ? OK : ERROR;
+}

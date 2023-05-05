@@ -5,7 +5,7 @@ DATA = ./data
 OUT = ./out
 
 run_e1: p4_e1
-	./p4_e1 $(DATA)/data_vertex_50K.txt "id:88997 tag:Golf_de_Ibiza" normal
+	./p4_e1 ./data/data_vertex_50K.txt "id:88997 tag:Golf_de_Ibiza" normal
 	@echo ""
 	./p4_e1 $(DATA)/data_vertex_50K.txt "id:88997 tag:Golf_de_Ibiza" sorted
 	@echo ""
