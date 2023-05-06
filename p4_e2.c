@@ -5,61 +5,94 @@
 
 #define MAX_LINE_LEN 1024
 
-int cmp_str(const void *a, const void *b) {
+int cmp_str(const void *a, const void *b)
+{
     return strcmp((const char *)a, (const char *)b);
 }
 
-int print_str(FILE *fp, const void *elem) {
+int print_str(FILE *fp, const void *elem)
+{
     return fprintf(fp, "%s", (const char *)elem);
 }
 
-int main(int argc, char *argv[]) {
-    if (argc != 3) {
-        fprintf(stderr, "Usage: %s input_file output_file\n", argv[0]);
-        return EXIT_FAILURE;
-    }
+int main(int argc, char *argv[])
+{
+    FILE *input = NULL;
+    FILE *output = NULL;
+    SearchQueue *sq = NULL;
+    void *elem = NULL;
+    char line[MAX_LINE_LEN];
+    char *line_copy = NULL;
+    char *min_line = NULL;
+    Status st = OK;
 
-    FILE *input = fopen(argv[1], "r");
-    if (!input) {
-        perror("Error opening input file");
+    if (argc != 3)
         return EXIT_FAILURE;
-    }
 
-    FILE *output = fopen(argv[2], "w");
-    if (!output) {
-        perror("Error opening output file");
+    input = fopen(argv[1], "r");
+
+    if (!input)
+        return EXIT_FAILURE;
+
+    output = fopen(argv[2], "w");
+    if (!output)
+    {
         fclose(input);
         return EXIT_FAILURE;
     }
 
-    SearchQueue *sq = search_queue_new(print_str, cmp_str);
-    if (!sq) {
-        fprintf(stderr, "Error creating search queue\n");
+    sq = search_queue_new(print_str, cmp_str);
+    if (!sq)
+    {
         fclose(input);
         fclose(output);
         return EXIT_FAILURE;
     }
 
-    char line[MAX_LINE_LEN];
-    while (fgets(line, MAX_LINE_LEN, input)) {
-        char *line_copy = strdup(line);
-        if (!line_copy) {
-            perror("Error allocating memory for line copy");
-            break;
+    while (fgets(line, MAX_LINE_LEN, input) && st != ERROR)
+    {
+        line_copy = strdup(line);
+        if (!line_copy)
+        {
+            st = ERROR;
         }
 
-        if (search_queue_push(sq, line_copy) == ERROR) {
-            fprintf(stderr, "Error inserting line into search queue\n");
-            free(line_copy);
-            break;
+        if (search_queue_push(sq, line_copy) == ERROR)
+        {
+            st = ERROR;
         }
+    }
+
+
+    if (st == ERROR)
+    {
+        if (line_copy) 
+        {
+            free(line_copy);
+        }
+
+        while (!search_queue_isEmpty(sq))
+        {
+            elem = search_queue_pop(sq);
+            if (elem)
+            {
+                free(elem);
+            }
+        }
+
+        fclose(input);
+        fclose(output); 
+        search_queue_free(sq);
+        return EXIT_FAILURE;
     }
 
     fclose(input);
 
-    while (!search_queue_isEmpty(sq)) {
-        char *min_line = search_queue_pop(sq);
-        if (min_line) {
+    while (!search_queue_isEmpty(sq))
+    {
+        min_line = search_queue_pop(sq);
+        if (min_line)
+        {
             print_str(output, min_line);
             free(min_line);
         }
