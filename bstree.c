@@ -197,7 +197,7 @@ int tree_depth(const BSTree *tree)
 {
   if (!tree)
   {
-    return -1;
+    return RET_ERROR;
   }
 
   return _bst_depth_rec(tree->root);
@@ -207,7 +207,7 @@ size_t tree_size(const BSTree *tree)
 {
   if (!tree)
   {
-    return -1;
+    return RET_ERROR;
   }
 
   return _bst_size_rec(tree->root);
@@ -217,7 +217,7 @@ int tree_preOrder(FILE *f, const BSTree *tree)
 {
   if (!f || !tree)
   {
-    return -1;
+    return RET_ERROR;
   }
 
   return _bst_preOrder_rec(tree->root, f, tree->print_ele) + fprintf(f, "\n");
@@ -227,7 +227,7 @@ int tree_inOrder(FILE *f, const BSTree *tree)
 {
   if (!f || !tree)
   {
-    return -1;
+    return RET_ERROR;
   }
 
   return _bst_inOrder_rec(tree->root, f, tree->print_ele) + fprintf(f, "\n");
@@ -237,7 +237,7 @@ int tree_postOrder(FILE *f, const BSTree *tree)
 {
   if (!f || !tree)
   {
-    return -1;
+    return RET_ERROR;
   }
 
   return _bst_postOrder_rec(tree->root, f, tree->print_ele) + fprintf(f, "\n");
@@ -249,29 +249,28 @@ int tree_postOrder(FILE *f, const BSTree *tree)
 BSTNode *_tree_find_min_node(BSTNode *node)
 {
   if (!node || !node->left)
-  {
     return node;
-  }
+
   return _tree_find_min_node(node->left);
 }
 
 BSTNode *_tree_find_max_node(BSTNode *node)
 {
   if (!node || !node->right)
-  {
     return node;
-  }
+
   return _tree_find_max_node(node->right);
 }
 
 Bool _tree_contains(BSTNode *node, const void *elem, P_ele_cmp cmp_ele)
 {
-  if (!node)
-  {
-    return FALSE;
-  }
+  int cmp;
 
-  int cmp = cmp_ele(elem, node->info);
+  if (!node)
+    return FALSE;
+
+  cmp = cmp_ele(elem, node->info);
+
   if (cmp == 0)
   {
     return TRUE;
@@ -288,6 +287,9 @@ Bool _tree_contains(BSTNode *node, const void *elem, P_ele_cmp cmp_ele)
 
 static BSTNode *_bst_insert_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_ele)
 {
+
+  int cmp;
+
   if (!pn)
   {
     pn = _bst_node_new();
@@ -299,12 +301,12 @@ static BSTNode *_bst_insert_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_ele
     return pn;
   }
 
-  int cmp_result = cmp_ele(elem, pn->info);
-  if (cmp_result < 0)
+  cmp = cmp_ele(elem, pn->info);
+  if (cmp < 0)
   {
     pn->left = _bst_insert_rec(pn->left, elem, cmp_ele);
   }
-  else if (cmp_result > 0)
+  else if (cmp > 0)
   {
     pn->right = _bst_insert_rec(pn->right, elem, cmp_ele);
   }
@@ -312,58 +314,17 @@ static BSTNode *_bst_insert_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_ele
   return pn;
 }
 
-/* Implementaciones públicas */
-
-void *tree_find_min(BSTree *tree)
-{
-  if (!tree)
-  {
-    return NULL;
-  }
-  BSTNode *min_node = _tree_find_min_node(tree->root);
-  return min_node ? min_node->info : NULL;
-}
-
-void *tree_find_max(BSTree *tree)
-{
-  if (!tree)
-  {
-    return NULL;
-  }
-  BSTNode *max_node = _tree_find_max_node(tree->root);
-  return max_node ? max_node->info : NULL;
-}
-
-Bool tree_contains(BSTree *tree, const void *elem)
-{
-  if (!tree || !elem)
-  {
-    return FALSE;
-  }
-  return _tree_contains(tree->root, elem, tree->cmp_ele);
-}
-
-Status tree_insert(BSTree *tree, const void *elem)
-{
-  if (!tree || !elem)
-  {
-    return ERROR;
-  }
-
-  tree->root = _bst_insert_rec(tree->root, elem, tree->cmp_ele);
-  return OK;
-}
-
-/* Implementación recursiva */
-
 BSTNode *_bst_remove_rec(BSTNode *node, const void *elem, P_ele_cmp cmp_ele)
 {
-  if (!node)
-  {
-    return NULL;
-  }
+  BSTNode *right_child = NULL;
+  BSTNode *left_child = NULL;
+  BSTNode *min_right = NULL;
+  int cmp;
 
-  int cmp = cmp_ele(elem, node->info);
+  if (!node)
+    return NULL;
+
+  cmp = cmp_ele(elem, node->info);
   if (cmp < 0)
   {
     node->left = _bst_remove_rec(node->left, elem, cmp_ele);
@@ -381,19 +342,19 @@ BSTNode *_bst_remove_rec(BSTNode *node, const void *elem, P_ele_cmp cmp_ele)
     }
     else if (!node->left)
     {
-      BSTNode *right_child = node->right;
+      right_child = node->right;
       _bst_node_free(node);
       return right_child;
     }
     else if (!node->right)
     {
-      BSTNode *left_child = node->left;
+      left_child = node->left;
       _bst_node_free(node);
       return left_child;
     }
     else
     {
-      BSTNode *min_right = _tree_find_min_node(node->right);
+      min_right = _tree_find_min_node(node->right);
       node->info = min_right->info;
       node->right = _bst_remove_rec(node->right, min_right->info, cmp_ele);
     }
@@ -401,15 +362,52 @@ BSTNode *_bst_remove_rec(BSTNode *node, const void *elem, P_ele_cmp cmp_ele)
   return node;
 }
 
-/* Implementación pública */
+/* Implementaciones públicas */
+
+void *tree_find_min(BSTree *tree)
+{
+  BSTNode *min_node = NULL;
+  if (!tree)
+    return NULL;
+
+  min_node = _tree_find_min_node(tree->root);
+  return min_node ? min_node->info : NULL;
+}
+
+void *tree_find_max(BSTree *tree)
+{
+  BSTNode *max_node = NULL;
+  if (!tree)
+    return NULL;
+
+  max_node = _tree_find_max_node(tree->root);
+  return max_node ? max_node->info : NULL;
+}
+
+Bool tree_contains(BSTree *tree, const void *elem)
+{
+  if (!tree || !elem)
+    return FALSE;
+
+  return _tree_contains(tree->root, elem, tree->cmp_ele);
+}
+
+Status tree_insert(BSTree *tree, const void *elem)
+{
+  if (!tree || !elem)
+    return ERROR;
+
+  tree->root = _bst_insert_rec(tree->root, elem, tree->cmp_ele);
+  return OK;
+}
 
 Status tree_remove(BSTree *tree, const void *elem)
 {
+  size_t size;
   if (!tree || !elem)
-  {
     return ERROR;
-  }
-  size_t initial_size = tree_size(tree);
+
+  size = tree_size(tree);
   tree->root = _bst_remove_rec(tree->root, elem, tree->cmp_ele);
-  return (initial_size > tree_size(tree)) ? OK : ERROR;
+  return (size > tree_size(tree)) ? OK : ERROR;
 }

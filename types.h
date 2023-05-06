@@ -8,6 +8,7 @@
 #ifndef TYPES_H_
 #define TYPES_H_
 
+#define RET_Z 0
 #define RET_ERROR -1
 #include <stdio.h>
 
