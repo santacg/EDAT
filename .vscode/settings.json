@@ -1,5 +1,10 @@
 {
     "files.associations": {
+<<<<<<< HEAD
         "string.h": "c"
+=======
+        "file_utils.h": "c",
+        "stdlib.h": "c"
+>>>>>>> EDAT-P2/master
     }
 }
